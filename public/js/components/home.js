@@ -148,17 +148,16 @@ async function loadHomeStats() {
     document.getElementById("articlesCount").textContent = "0";
   }
 
+  // Forum count - set placeholder since API requires category_id
+  // We don't have a "get all posts" endpoint, so we'll show a friendly message
   try {
-    // Load forums count
-    const forumsResponse = await fetch("/aids/api/forums/list.php");
-    const forumsData = await forumsResponse.json();
-    if (forumsData.success) {
-      document.getElementById("forumsCount").textContent =
-        forumsData.data.posts.length;
-    }
+    // For now, just show the forum is available
+    document.getElementById("forumsCount").textContent = "∞";
+    document.getElementById("forumsCount").parentElement.title =
+      "Discussions disponibles";
   } catch (error) {
-    console.error("Error loading forums count:", error);
-    document.getElementById("forumsCount").textContent = "0";
+    console.error("Error setting forums count:", error);
+    document.getElementById("forumsCount").textContent = "-";
   }
 
   try {

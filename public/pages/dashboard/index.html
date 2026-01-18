@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - AIDES</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#dc2626",
+              dark: "#0f0f1e",
+              "dark-card": "#1a1a2e",
+              "text-secondary": "#9ca3af",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .sidebar-transition {
+        transition: transform 0.3s ease-in-out;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar-hidden {
+          transform: translateX(-100%);
+        }
+      }
+
+      .menu-section-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6b7280;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: #9ca3af;
+        transition: all 0.2s;
+        cursor: pointer;
+        border-left: 3px solid transparent;
+      }
+
+      .menu-item:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+      }
+
+      .menu-item.active {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border-left-color: #ef4444;
+      }
+
+      .menu-item i {
+        width: 1.5rem;
+        margin-right: 0.75rem;
+      }
+
+      /* Hide scrollbar but keep functionality */
+      nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      nav {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Compact styles for bottom menu */
+      .compact-btn {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+      }
+
+      .compact-btn i {
+        width: 1rem !important;
+        margin-right: 0.5rem !important;
+      }
+    </style>
+  </head>
+  <body class="bg-dark min-h-screen">
+    <!-- Mobile Overlay -->
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
+    ></div>
+
+    <!-- Left Sidebar Navigation -->
+    <aside
+      id="sidebar"
+      class="fixed left-0 top-0 h-full w-64 bg-dark-card border-r border-gray-700 z-50 sidebar-transition flex flex-col"
+    >
+      <!-- Logo Section -->
+      <div class="flex items-center space-x-3 p-4 border-b border-gray-700">
+        <img
+          src="/aids/public/assets/images/logo.png"
+          alt="AIDES Logo"
+          class="w-10 h-10"
+        />
+        <span class="text-white text-xl font-bold">AIDES</span>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="flex-1 overflow-y-auto py-4">
+        <!-- GENERAL Section -->
+        <div class="menu-section-title">Général</div>
+        <a href="#" data-tab="home" class="menu-item active">
+          <i class="fas fa-home"></i>
+          <span>Accueil</span>
+        </a>
+        <a href="#" data-tab="articles" class="menu-item">
+          <i class="fas fa-newspaper"></i>
+          <span>Articles</span>
+        </a>
+        <a href="#" data-tab="forums" class="menu-item">
+          <i class="fas fa-comments"></i>
+          <span>Forum</span>
+        </a>
+        <a href="#" data-tab="quiz" class="menu-item">
+          <i class="fas fa-clipboard-check"></i>
+          <span>Quiz</span>
+        </a>
+
+        <!-- COMMUNITY Section -->
+        <div class="menu-section-title">Communauté</div>
+        <a href="#" data-tab="donations" class="menu-item">
+          <i class="fas fa-heart"></i>
+          <span>Dons</span>
+        </a>
+
+        <!-- MANAGEMENT Section (Admin/Medical Only) -->
+        <div id="managementSection" class="hidden">
+          <div class="menu-section-title">Gestion</div>
+          <a
+            href="#"
+            data-tab="users"
+            id="usersMenuItem"
+            class="menu-item hidden"
+          >
+            <i class="fas fa-users"></i>
+            <span>Utilisateurs</span>
+          </a>
+          <a
+            href="#"
+            data-tab="quizManagement"
+            id="quizManagementMenuItem"
+            class="menu-item hidden"
+          >
+            <i class="fas fa-tasks"></i>
+            <span>Gestion Quiz</span>
+          </a>
+          <a
+            href="#"
+            data-tab="articleManagement"
+            id="articleManagementMenuItem"
+            class="menu-item hidden"
+          >
+            <i class="fas fa-edit"></i>
+            <span>Gestion Articles</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- User Section (Bottom) -->
+      <div class="border-t border-gray-700 p-2">
+        <!-- User Info -->
+        <div class="mb-1">
+          <div class="flex items-center space-x-2 mb-1">
+            <div
+              class="w-8 h-8 bg-primary rounded-full flex items-center justify-center"
+            >
+              <span class="text-white font-bold text-sm" id="userInitial"
+                >U</span
+              >
+            </div>
+            <div class="flex-1">
+              <p class="text-white font-semibold text-xs" id="userName">
+                Utilisateur
+              </p>
+              <span
+                id="roleBadge"
+                class="text-xs px-1.5 py-0.5 rounded bg-gray-600 text-white"
+                >User</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings & Logout -->
+        <a href="#" data-tab="settings" class="menu-item compact-btn">
+          <i class="fas fa-cog"></i>
+          <span>Paramètres</span>
+        </a>
+        <a
+          href="#"
+          id="logoutBtn"
+          class="menu-item compact-btn text-red-400 hover:text-red-300 hover:bg-red-900/20"
+        >
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Déconnexion</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+      <!-- Top Bar (Mobile) -->
+      <div
+        class="md:hidden bg-dark-card border-b border-gray-700 px-4 py-3 flex items-center justify-between"
+      >
+        <button id="menuToggle" class="text-white text-2xl">
+          <i class="fas fa-bars"></i>
+        </button>
+        <span class="text-white font-bold">AIDES</span>
+        <div class="w-8"></div>
+      </div>
+
+      <!-- Main Content Area -->
+      <main class="p-4 md:p-8">
+        <!-- Home Tab (Default) -->
+        <div id="homeTab" class="tab-content">
+          <div id="homeContent">
+            <!-- Home content will be loaded by home.js -->
+          </div>
+        </div>
+
+        <!-- Articles Tab -->
+        <div id="articlesTab" class="tab-content hidden">
+          <!-- Articles content loaded by articleFeed.js -->
+        </div>
+
+        <!-- Forums Tab -->
+        <div id="forumsTab" class="tab-content hidden">
+          <div class="bg-dark-card rounded-lg p-8 text-center">
+            <i class="fas fa-comments text-primary text-6xl mb-4"></i>
+            <h2 class="text-white text-2xl font-bold mb-4">Forum</h2>
+            <p class="text-text-secondary">
+              Espace de discussion communautaire à venir.
+            </p>
+          </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quizTab" class="tab-content hidden">
+          <div class="bg-dark-card rounded-lg p-8 text-center">
+            <i class="fas fa-clipboard-check text-primary text-6xl mb-4"></i>
+            <h2 class="text-white text-2xl font-bold mb-4">Quiz</h2>
+            <p class="text-text-secondary">
+              Le quiz d'évaluation des risques sera disponible ici.
+            </p>
+          </div>
+        </div>
+
+        <!-- Donations Tab -->
+        <div id="donationsTab" class="tab-content hidden">
+          <div id="donationsContent">
+            <!-- Donations content loaded by donations.js -->
+          </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" class="tab-content hidden">
+          <div class="bg-dark-card rounded-lg p-8 text-center">
+            <i class="fas fa-cog text-primary text-6xl mb-4"></i>
+            <h2 class="text-white text-2xl font-bold mb-4">Paramètres</h2>
+            <p class="text-text-secondary">
+              Gérez vos paramètres de compte ici.
+            </p>
+          </div>
+        </div>
+
+        <!-- Users Management Tab (Admin Only) -->
+        <div id="usersTab" class="tab-content hidden">
+          <div id="adminManagementContent">
+            <!-- Content loaded by adminManagement.js -->
+          </div>
+        </div>
+
+        <!-- Quiz Management Tab (Admin/Medical) -->
+        <div id="quizManagementTab" class="tab-content hidden">
+          <div id="quizManagementContent">
+            <!-- Quiz management content loaded by quizManagement.js -->
+          </div>
+        </div>
+
+        <!-- Article Management Tab (Admin/Medical) -->
+        <div id="articleManagementTab" class="tab-content hidden">
+          <div id="articleManagementContent">
+            <!-- Article management content loaded by articleManagement.js -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/aids/public/js/auth.js"></script>
+    <script src="/aids/public/js/dashboard.js"></script>
+    <script src="/aids/public/js/components/home.js"></script>
+    <script src="/aids/public/js/components/articleFeed.js"></script>
+    <script src="/aids/public/js/components/forums.js"></script>
+    <script src="/aids/public/js/components/quiz.js"></script>
+    <script src="/aids/public/js/components/donations.js"></script>
+    <script src="/aids/public/js/components/settings.js"></script>
+    <script src="/aids/public/js/components/adminManagement.js"></script>
+    <script src="/aids/public/js/components/quizManagement.js"></script>
+    <script src="/aids/public/js/components/articleManagement.js"></script>
+  </body>
+</html>

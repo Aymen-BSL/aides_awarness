@@ -99,7 +99,7 @@ if (document.getElementById("registerForm")) {
 
           // Rediriger vers la page de connexion après 2 secondes
           setTimeout(() => {
-            window.location.href = "/public/connexion.html";
+            window.location.href = "/aids/public/connexion.html";
           }, 2000);
         } else {
           // Afficher l'erreur
